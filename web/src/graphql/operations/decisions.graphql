@@ -1,0 +1,42 @@
+fragment DecisionListItem on Decision {
+  id
+  title
+  description
+  status
+  decidedAt
+  createdAt
+  updatedAt
+  owner {
+    id
+    name
+  }
+}
+
+query Decisions($teamId: ID!, $first: Int, $after: String) {
+  decisions(teamId: $teamId, first: $first, after: $after) {
+    edges {
+      node {
+        ...DecisionListItem
+      }
+      cursor
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    totalCount
+  }
+}
+
+mutation CreateDecision($input: CreateDecisionInput!) {
+  createDecision(input: $input) {
+    decision {
+      ...DecisionListItem
+    }
+    userErrors {
+      field
+      message
+      code
+    }
+  }
+}

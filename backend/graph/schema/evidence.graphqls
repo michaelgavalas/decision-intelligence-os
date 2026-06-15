@@ -1,0 +1,46 @@
+"The kind of source a piece of evidence comes from."
+enum EvidenceSourceType {
+  URL
+  DOCUMENT
+  NOTE
+  DATASET
+}
+
+"Evidence attached to an assumption that supports or challenges it."
+type Evidence {
+  id: ID!
+  sourceType: EvidenceSourceType!
+  sourceUrl: String
+  content: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  assumption: Assumption!
+}
+
+input AttachEvidenceInput {
+  assumptionId: ID!
+  sourceType: EvidenceSourceType!
+  sourceUrl: String
+  content: String!
+}
+
+input UpdateEvidenceInput {
+  id: ID!
+  sourceType: EvidenceSourceType!
+  sourceUrl: String
+  content: String!
+}
+
+type EvidencePayload {
+  evidence: Evidence
+  userErrors: [UserError!]!
+}
+
+extend type Mutation {
+  "Attach evidence to an assumption."
+  attachEvidence(input: AttachEvidenceInput!): EvidencePayload! @authenticated
+  "Update a piece of evidence."
+  updateEvidence(input: UpdateEvidenceInput!): EvidencePayload! @authenticated
+  "Remove a piece of evidence."
+  removeEvidence(id: ID!): DeletePayload! @authenticated
+}

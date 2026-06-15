@@ -1,0 +1,4 @@
+extend type Subscription {
+  "Emits a decision whenever one changes within the given team."
+  decisionUpdated(teamId: ID!): Decision! @authenticated
+}

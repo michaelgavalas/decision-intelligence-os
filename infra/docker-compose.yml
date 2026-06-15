@@ -1,0 +1,80 @@
+name: decision-intelligence-os
+
+services:
+  postgres:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_USER: dios
+      POSTGRES_PASSWORD: dios
+      POSTGRES_DB: dios
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dios -d dios"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  migrate:
+    image: migrate/migrate:v4.19.1
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ../backend/migrations:/migrations:ro
+    command:
+      [
+        "-path", "/migrations",
+        "-database", "postgres://dios:dios@postgres:5432/dios?sslmode=disable",
+        "up",
+      ]
+    restart: on-failure
+
+  backend:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    environment:
+      ENV: production
+      PORT: "8080"
+      DATABASE_URL: postgres://dios:dios@postgres:5432/dios?sslmode=disable
+      LOG_LEVEL: info
+      COOKIE_SECURE: "true"
+      GRAPHQL_INTROSPECTION: "false"
+      AI_ENABLED: "false"
+    env_file:
+      - path: ../.env
+        required: false
+    expose:
+      - "8080"
+    healthcheck:
+      test: ["CMD", "/api", "-healthcheck"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2-alpine
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddydata:/data
+      - caddyconfig:/config
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  caddydata:
+  caddyconfig:

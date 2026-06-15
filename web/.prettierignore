@@ -1,0 +1,3 @@
+dist
+src/graphql/generated
+pnpm-lock.yaml

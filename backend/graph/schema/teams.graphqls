@@ -1,0 +1,75 @@
+"A team that groups users and scopes their decisions."
+type Team {
+  id: ID!
+  name: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  members: [Membership!]!
+}
+
+"A user's membership of a team and the role they hold within it."
+type Membership {
+  team: Team!
+  user: User!
+  role: Role!
+  createdAt: DateTime!
+}
+
+extend type Query {
+  "Teams the authenticated user belongs to."
+  myTeams: [Team!]! @authenticated
+  "A single team by id."
+  team(id: ID!): Team @authenticated
+}
+
+input CreateTeamInput {
+  name: String!
+}
+
+type CreateTeamPayload {
+  team: Team
+  userErrors: [UserError!]!
+}
+
+input AddTeamMemberInput {
+  teamId: ID!
+  userId: ID!
+  role: Role!
+}
+
+type AddTeamMemberPayload {
+  membership: Membership
+  userErrors: [UserError!]!
+}
+
+input ChangeMemberRoleInput {
+  teamId: ID!
+  userId: ID!
+  role: Role!
+}
+
+type ChangeMemberRolePayload {
+  membership: Membership
+  userErrors: [UserError!]!
+}
+
+input RemoveTeamMemberInput {
+  teamId: ID!
+  userId: ID!
+}
+
+type RemoveTeamMemberPayload {
+  success: Boolean!
+  userErrors: [UserError!]!
+}
+
+extend type Mutation {
+  "Create a team owned by the authenticated user."
+  createTeam(input: CreateTeamInput!): CreateTeamPayload! @authenticated
+  "Add a user to a team with a role."
+  addTeamMember(input: AddTeamMemberInput!): AddTeamMemberPayload! @authenticated
+  "Change a member's role within a team."
+  changeMemberRole(input: ChangeMemberRoleInput!): ChangeMemberRolePayload! @authenticated
+  "Remove a member from a team."
+  removeTeamMember(input: RemoveTeamMemberInput!): RemoveTeamMemberPayload! @authenticated
+}

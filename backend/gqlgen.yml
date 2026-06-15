@@ -1,0 +1,66 @@
+schema:
+  - graph/schema/*.graphqls
+
+exec:
+  filename: graph/generated.go
+  package: graph
+
+model:
+  filename: graph/model/models_gen.go
+  package: model
+
+resolver:
+  layout: follow-schema
+  dir: graph/resolvers
+  package: resolvers
+  filename_template: "{name}.resolvers.go"
+
+autobind: []
+
+omit_slice_element_pointers: true
+struct_tag: json
+
+models:
+  ID:
+    model:
+      - github.com/99designs/gqlgen/graphql.ID
+  Int:
+    model:
+      - github.com/99designs/gqlgen/graphql.Int
+      - github.com/99designs/gqlgen/graphql.Int64
+      - github.com/99designs/gqlgen/graphql.Int32
+  DateTime:
+    model:
+      - github.com/michaelgavalas/decision-intelligence-os/backend/graph/scalars.DateTime
+  # Object relationships are resolved by field resolvers backed by per-request
+  # dataloaders, rather than being eagerly populated on the model structs. This
+  # keeps reads batched and avoids materializing the (cyclic) object graph.
+  Decision:
+    fields:
+      owner: { resolver: true }
+      team: { resolver: true }
+      assumptions: { resolver: true }
+      predictions: { resolver: true }
+      outcome: { resolver: true }
+  Assumption:
+    fields:
+      decision: { resolver: true }
+      evidence: { resolver: true }
+  Evidence:
+    fields:
+      assumption: { resolver: true }
+  Prediction:
+    fields:
+      decision: { resolver: true }
+  Outcome:
+    fields:
+      decision: { resolver: true }
+  Team:
+    fields:
+      members: { resolver: true }
+
+# The @authenticated directive is enforced at runtime; gqlgen generates the
+# wiring and expects an implementation (see graph/directives).
+directives:
+  authenticated:
+    skip_runtime: false

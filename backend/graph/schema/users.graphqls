@@ -1,0 +1,29 @@
+"A user account."
+type User {
+  id: ID!
+  email: String!
+  name: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+extend type Query {
+  "The currently authenticated user."
+  me: User @authenticated
+  "A single user by id."
+  user(id: ID!): User @authenticated
+}
+
+input UpdateProfileInput {
+  name: String!
+}
+
+type UpdateProfilePayload {
+  user: User
+  userErrors: [UserError!]!
+}
+
+extend type Mutation {
+  "Update the authenticated user's profile."
+  updateProfile(input: UpdateProfileInput!): UpdateProfilePayload! @authenticated
+}

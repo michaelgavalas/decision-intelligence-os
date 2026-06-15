@@ -1,0 +1,7 @@
+packages:
+  - "web"
+  - "mobile"
+allowBuilds:
+  esbuild: true
+  msw: true
+dangerouslyAllowAllBuilds: false

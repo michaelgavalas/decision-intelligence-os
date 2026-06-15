@@ -1,0 +1,27 @@
+"The final result recorded for a decision."
+type Outcome {
+  id: ID!
+  summary: String!
+  success: Boolean!
+  resolvedAt: DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  decision: Decision!
+}
+
+input RecordOutcomeInput {
+  decisionId: ID!
+  summary: String!
+  success: Boolean!
+  resolvedAt: DateTime!
+}
+
+type OutcomePayload {
+  outcome: Outcome
+  userErrors: [UserError!]!
+}
+
+extend type Mutation {
+  "Record (or update) the outcome of a decision."
+  recordOutcome(input: RecordOutcomeInput!): OutcomePayload! @authenticated
+}

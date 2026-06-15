@@ -1,0 +1,72 @@
+"Lifecycle status of a decision."
+enum DecisionStatus {
+  DRAFT
+  ACTIVE
+  DECIDED
+  ARCHIVED
+}
+
+"A decision: the root aggregate that assumptions, predictions, and an outcome hang from."
+type Decision {
+  id: ID!
+  title: String!
+  description: String!
+  status: DecisionStatus!
+  decidedAt: DateTime
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  owner: User!
+  team: Team!
+  assumptions: [Assumption!]!
+  predictions: [Prediction!]!
+  outcome: Outcome
+}
+
+type DecisionEdge {
+  node: Decision!
+  cursor: String!
+}
+
+type DecisionConnection {
+  edges: [DecisionEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+extend type Query {
+  "A single decision by id."
+  decision(id: ID!): Decision @authenticated
+  "A paginated list of a team's decisions."
+  decisions(teamId: ID!, first: Int, after: String): DecisionConnection! @authenticated
+}
+
+input CreateDecisionInput {
+  teamId: ID!
+  title: String!
+  description: String!
+}
+
+input UpdateDecisionInput {
+  id: ID!
+  title: String!
+  description: String!
+}
+
+input TransitionDecisionInput {
+  id: ID!
+  status: DecisionStatus!
+}
+
+type DecisionPayload {
+  decision: Decision
+  userErrors: [UserError!]!
+}
+
+extend type Mutation {
+  "Create a decision within a team."
+  createDecision(input: CreateDecisionInput!): DecisionPayload! @authenticated
+  "Update a decision's title and description."
+  updateDecision(input: UpdateDecisionInput!): DecisionPayload! @authenticated
+  "Move a decision to a new lifecycle status."
+  transitionDecision(input: TransitionDecisionInput!): DecisionPayload! @authenticated
+}

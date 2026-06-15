@@ -1,0 +1,36 @@
+"An assumption that underpins a decision, with a confidence in [0, 1]."
+type Assumption {
+  id: ID!
+  statement: String!
+  confidence: Float!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  decision: Decision!
+  evidence: [Evidence!]!
+}
+
+input AddAssumptionInput {
+  decisionId: ID!
+  statement: String!
+  confidence: Float!
+}
+
+input UpdateAssumptionInput {
+  id: ID!
+  statement: String!
+  confidence: Float!
+}
+
+type AssumptionPayload {
+  assumption: Assumption
+  userErrors: [UserError!]!
+}
+
+extend type Mutation {
+  "Add an assumption to a decision."
+  addAssumption(input: AddAssumptionInput!): AssumptionPayload! @authenticated
+  "Update an assumption's statement and confidence."
+  updateAssumption(input: UpdateAssumptionInput!): AssumptionPayload! @authenticated
+  "Remove an assumption."
+  removeAssumption(id: ID!): DeletePayload! @authenticated
+}

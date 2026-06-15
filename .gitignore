@@ -1,0 +1,30 @@
+# ---- Secrets / local environment ----
+.env
+.env.*
+!.env.example
+*.local
+
+# ---- OS / editor ----
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# ---- Go ----
+/backend/bin/
+*.test
+*.out
+coverage.txt
+coverage.html
+
+# ---- Node / pnpm ----
+node_modules/
+.pnpm-store/
+web/dist/
+mobile/.expo/
+*.tsbuildinfo
+
+# ---- Docker / data ----
+infra/data/
+*.log

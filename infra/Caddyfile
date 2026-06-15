@@ -1,0 +1,16 @@
+# Replace localhost with your domain in production for automatic HTTPS.
+{$SITE_ADDRESS:localhost} {
+	encode gzip zstd
+
+	# GraphQL API, subscriptions (WebSocket), and ops endpoints.
+	reverse_proxy /graphql* backend:8080
+	reverse_proxy /healthz backend:8080
+	reverse_proxy /readyz backend:8080
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+}

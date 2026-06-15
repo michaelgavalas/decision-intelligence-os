@@ -1,0 +1,20 @@
+"A single cognitive bias flagged in a piece of text."
+type DetectedBias {
+  name: String!
+  explanation: String!
+}
+
+"The result of a bias-detection request."
+type BiasReport {
+  summary: String!
+  biases: [DetectedBias!]!
+}
+
+extend type Mutation {
+  "Summarize a piece of evidence; null when AI assistance is disabled."
+  summarizeEvidence(evidenceId: ID!): String @authenticated
+  "Critique an assumption; null when AI assistance is disabled."
+  critiqueAssumption(assumptionId: ID!): String @authenticated
+  "Detect cognitive biases in text; null when AI assistance is disabled."
+  detectBias(text: String!): BiasReport @authenticated
+}

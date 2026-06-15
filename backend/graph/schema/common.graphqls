@@ -1,0 +1,45 @@
+"An RFC 3339 timestamp."
+scalar DateTime
+
+"Marks a field that requires an authenticated caller."
+directive @authenticated on FIELD_DEFINITION
+
+"Membership role within a team, ordered from most to least privileged."
+enum Role {
+  ADMIN
+  MEMBER
+  VIEWER
+}
+
+"A recoverable, field-level error returned from a mutation."
+type UserError {
+  "The input field the error applies to, if any."
+  field: String
+  "A human-readable description of the error."
+  message: String!
+  "A stable, machine-readable error code."
+  code: String!
+}
+
+"Relay-style pagination metadata for a connection."
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+"Shared payload for mutations that delete an entity."
+type DeletePayload {
+  success: Boolean!
+  userErrors: [UserError!]!
+}
+
+type Query {
+  "Liveness probe; returns a static value when the API is reachable."
+  health: String!
+}
+
+type Mutation
+
+type Subscription

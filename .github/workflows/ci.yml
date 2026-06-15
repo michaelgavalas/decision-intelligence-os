@@ -1,0 +1,111 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  GO_VERSION: "1.26"
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache-dependency-path: backend/go.sum
+      - name: gofmt
+        working-directory: backend
+        run: test -z "$(gofmt -l .)" || (gofmt -l . && exit 1)
+      - name: Install sqlc
+        run: go install github.com/sqlc-dev/sqlc/cmd/sqlc@v1.31.1
+      - name: sqlc vet & diff
+        working-directory: backend
+        run: |
+          sqlc vet
+          sqlc diff
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v7
+        with:
+          version: v2.12.2
+          working-directory: backend
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache-dependency-path: backend/go.sum
+      - name: Test (race + coverage)
+        working-directory: backend
+        run: go test -race -covermode=atomic -coverpkg=./... -coverprofile=coverage.out ./...
+      - name: Enforce coverage gate
+        working-directory: backend
+        env:
+          THRESHOLD: "60"
+        run: |
+          # Measure coverage of hand-written code only (exclude generated artifacts).
+          grep -vE 'generated\.go|_gen\.go|/sqlc/|/graph/model/' coverage.out > coverage.core.out
+          pct=$(go tool cover -func=coverage.core.out | awk '/^total:/ {sub(/%/,"",$3); print $3}')
+          echo "Core coverage: ${pct}% (threshold ${THRESHOLD}%)"
+          awk -v p="$pct" -v t="$THRESHOLD" 'BEGIN { exit (p+0 < t+0) ? 1 : 0 }' || {
+            echo "::error::Core coverage ${pct}% is below the ${THRESHOLD}% threshold"; exit 1; }
+      - uses: codecov/codecov-action@v4
+        with:
+          files: backend/coverage.out
+          flags: backend
+        continue-on-error: true
+
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Generate GraphQL types
+        run: pnpm --filter @dios/web codegen
+      - name: Verify generated types are up to date
+        run: git diff --exit-code web/src/graphql/generated
+      - name: Typecheck
+        run: pnpm --filter @dios/web typecheck
+      - name: Lint
+        run: pnpm --filter @dios/web lint
+      - name: Test
+        run: pnpm --filter @dios/web test
+      - name: Build
+        run: pnpm --filter @dios/web build
+
+  build:
+    runs-on: ubuntu-latest
+    needs: [lint, test]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Build image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: infra/Dockerfile.backend
+          push: false
+          tags: dios-backend:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

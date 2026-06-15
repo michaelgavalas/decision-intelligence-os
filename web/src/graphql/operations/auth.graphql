@@ -1,0 +1,44 @@
+fragment AuthPayloadFields on AuthPayload {
+  user {
+    id
+    email
+    name
+  }
+  accessToken
+  accessExpiresAt
+  userErrors {
+    field
+    message
+    code
+  }
+}
+
+mutation Login($input: LoginInput!) {
+  login(input: $input) {
+    ...AuthPayloadFields
+  }
+}
+
+mutation Register($input: RegisterInput!) {
+  register(input: $input) {
+    ...AuthPayloadFields
+  }
+}
+
+mutation Refresh {
+  refreshToken {
+    ...AuthPayloadFields
+  }
+}
+
+mutation Logout {
+  logout
+}
+
+query Me {
+  me {
+    id
+    email
+    name
+  }
+}

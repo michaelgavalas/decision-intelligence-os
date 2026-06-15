@@ -1,0 +1,19 @@
+query TeamMetrics($teamId: ID!) {
+  teamMetrics(teamId: $teamId) {
+    brierScore
+    forecastCount
+    decisionSuccessRate
+    resolvedDecisionCount
+  }
+}
+
+query Calibration($teamId: ID!) {
+  calibration(teamId: $teamId) {
+    bins {
+      bucket
+      meanPredicted
+      observedFrequency
+      sampleSize
+    }
+  }
+}

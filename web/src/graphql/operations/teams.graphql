@@ -1,0 +1,7 @@
+query MyTeams {
+  myTeams {
+    id
+    name
+    createdAt
+  }
+}

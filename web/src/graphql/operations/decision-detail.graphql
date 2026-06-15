@@ -1,0 +1,209 @@
+fragment EvidenceFields on Evidence {
+  id
+  sourceType
+  sourceUrl
+  content
+  createdAt
+}
+
+fragment AssumptionFields on Assumption {
+  id
+  statement
+  confidence
+  createdAt
+  evidence {
+    ...EvidenceFields
+  }
+}
+
+fragment PredictionFields on Prediction {
+  id
+  statement
+  probability
+  resolvesAt
+  createdAt
+}
+
+fragment OutcomeFields on Outcome {
+  id
+  summary
+  success
+  resolvedAt
+}
+
+fragment DecisionDetail on Decision {
+  id
+  title
+  description
+  status
+  decidedAt
+  createdAt
+  updatedAt
+  owner {
+    id
+    name
+    email
+  }
+  team {
+    id
+    name
+  }
+  assumptions {
+    ...AssumptionFields
+  }
+  predictions {
+    ...PredictionFields
+  }
+  outcome {
+    ...OutcomeFields
+  }
+}
+
+query Decision($id: ID!) {
+  decision(id: $id) {
+    ...DecisionDetail
+  }
+}
+
+mutation UpdateDecision($input: UpdateDecisionInput!) {
+  updateDecision(input: $input) {
+    decision {
+      id
+      title
+      description
+    }
+    userErrors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation TransitionDecision($input: TransitionDecisionInput!) {
+  transitionDecision(input: $input) {
+    decision {
+      id
+      status
+      decidedAt
+    }
+    userErrors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation AddAssumption($input: AddAssumptionInput!) {
+  addAssumption(input: $input) {
+    assumption {
+      ...AssumptionFields
+    }
+    userErrors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation UpdateAssumption($input: UpdateAssumptionInput!) {
+  updateAssumption(input: $input) {
+    assumption {
+      ...AssumptionFields
+    }
+    userErrors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation RemoveAssumption($id: ID!) {
+  removeAssumption(id: $id) {
+    success
+    userErrors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation AttachEvidence($input: AttachEvidenceInput!) {
+  attachEvidence(input: $input) {
+    evidence {
+      ...EvidenceFields
+    }
+    userErrors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation UpdateEvidence($input: UpdateEvidenceInput!) {
+  updateEvidence(input: $input) {
+    evidence {
+      ...EvidenceFields
+    }
+    userErrors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation RemoveEvidence($id: ID!) {
+  removeEvidence(id: $id) {
+    success
+    userErrors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation CreatePrediction($input: CreatePredictionInput!) {
+  createPrediction(input: $input) {
+    prediction {
+      ...PredictionFields
+    }
+    userErrors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation UpdatePrediction($input: UpdatePredictionInput!) {
+  updatePrediction(input: $input) {
+    prediction {
+      ...PredictionFields
+    }
+    userErrors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation RecordOutcome($input: RecordOutcomeInput!) {
+  recordOutcome(input: $input) {
+    outcome {
+      ...OutcomeFields
+    }
+    userErrors {
+      field
+      message
+      code
+    }
+  }
+}

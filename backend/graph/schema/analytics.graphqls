@@ -1,0 +1,35 @@
+"Headline decision-quality summary for a team."
+type TeamMetrics {
+  "Mean squared error of resolved forecasts, in [0, 1]; lower is better."
+  brierScore: Float!
+  "Number of resolved forecasts the Brier score covers."
+  forecastCount: Int!
+  "Fraction of resolved decisions that succeeded, in [0, 1]."
+  decisionSuccessRate: Float!
+  "Number of decisions with a recorded outcome."
+  resolvedDecisionCount: Int!
+}
+
+"One decile of a calibration (reliability) curve."
+type CalibrationBin {
+  "The decile index, 1..10, of predicted probability."
+  bucket: Int!
+  "Average predicted probability of forecasts in the bin."
+  meanPredicted: Float!
+  "Fraction of those forecasts that actually succeeded, in [0, 1]."
+  observedFrequency: Float!
+  "Number of forecasts in the bin."
+  sampleSize: Int!
+}
+
+"The full set of calibration bins for a team, ordered by bucket."
+type CalibrationReport {
+  bins: [CalibrationBin!]!
+}
+
+extend type Query {
+  "Decision-quality metrics for a team."
+  teamMetrics(teamId: ID!): TeamMetrics! @authenticated
+  "Calibration report for a team."
+  calibration(teamId: ID!): CalibrationReport! @authenticated
+}

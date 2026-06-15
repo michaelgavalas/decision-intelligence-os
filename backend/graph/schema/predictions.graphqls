@@ -1,0 +1,36 @@
+"A forecast attached to a decision, with a probability in [0, 1]."
+type Prediction {
+  id: ID!
+  statement: String!
+  probability: Float!
+  resolvesAt: DateTime
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  decision: Decision!
+}
+
+input CreatePredictionInput {
+  decisionId: ID!
+  statement: String!
+  probability: Float!
+  resolvesAt: DateTime
+}
+
+input UpdatePredictionInput {
+  id: ID!
+  statement: String!
+  probability: Float!
+  resolvesAt: DateTime
+}
+
+type PredictionPayload {
+  prediction: Prediction
+  userErrors: [UserError!]!
+}
+
+extend type Mutation {
+  "Create a forecast for a decision."
+  createPrediction(input: CreatePredictionInput!): PredictionPayload! @authenticated
+  "Update a forecast."
+  updatePrediction(input: UpdatePredictionInput!): PredictionPayload! @authenticated
+}

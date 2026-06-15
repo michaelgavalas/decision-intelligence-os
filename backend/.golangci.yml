@@ -1,0 +1,67 @@
+version: "2"
+
+run:
+  timeout: 5m
+  tests: true
+
+linters:
+  default: none
+  enable:
+    - errcheck
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+    - revive
+    - gocritic
+    - misspell
+    - gosec
+    - bodyclose
+    - nilerr
+    - unconvert
+    - unparam
+  settings:
+    revive:
+      rules:
+        - name: exported
+          disabled: false
+        - name: context-as-argument
+        - name: error-return
+        - name: error-naming
+        - name: if-return
+        - name: var-declaration
+    gosec:
+      # Reviewed, intentional exclusions (see .github/workflows/security.yml for rationale):
+      #   G115 - bounded int conversions (pagination limits, argon2 params)
+      #   G124 - auth cookies set Secure from COOKIE_SECURE with SameSite=Strict; CSRF cookie is
+      #          deliberately JS-readable for the double-submit pattern
+      #   G704 - the -healthcheck self-probe targets a fixed loopback host on the local port only
+      excludes:
+        - G115
+        - G124
+        - G704
+  exclusions:
+    rules:
+      # Generated code is exempt from style/security linting.
+      - path: (generated\.go|_gen\.go|/sqlc/)
+        linters:
+          - revive
+          - gocritic
+          - gosec
+          - unparam
+          - unused
+      # Tests may use weaker constructs where it aids clarity.
+      - path: _test\.go
+        linters:
+          - gosec
+          - errcheck
+          - unparam
+
+formatters:
+  enable:
+    - gofmt
+    - goimports
+  settings:
+    goimports:
+      local-prefixes:
+        - github.com/michaelgavalas/decision-intelligence-os/backend

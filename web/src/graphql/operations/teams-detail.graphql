@@ -1,0 +1,77 @@
+query TeamDetail($id: ID!) {
+  team(id: $id) {
+    id
+    name
+    createdAt
+    members {
+      user {
+        id
+        name
+        email
+      }
+      role
+      createdAt
+    }
+  }
+}
+
+mutation CreateTeam($input: CreateTeamInput!) {
+  createTeam(input: $input) {
+    team {
+      id
+      name
+    }
+    userErrors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation AddTeamMember($input: AddTeamMemberInput!) {
+  addTeamMember(input: $input) {
+    membership {
+      user {
+        id
+        name
+        email
+      }
+      role
+    }
+    userErrors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation ChangeMemberRole($input: ChangeMemberRoleInput!) {
+  changeMemberRole(input: $input) {
+    membership {
+      user {
+        id
+        name
+        email
+      }
+      role
+    }
+    userErrors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation RemoveTeamMember($input: RemoveTeamMemberInput!) {
+  removeTeamMember(input: $input) {
+    success
+    userErrors {
+      field
+      message
+      code
+    }
+  }
+}

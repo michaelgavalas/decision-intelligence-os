@@ -1,0 +1,30 @@
+"The result of an authentication mutation: tokens plus the authenticated user."
+type AuthPayload {
+  user: User
+  accessToken: String
+  accessExpiresAt: DateTime
+  refreshToken: String
+  userErrors: [UserError!]!
+}
+
+input RegisterInput {
+  email: String!
+  name: String!
+  password: String!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+extend type Mutation {
+  "Register a new account."
+  register(input: RegisterInput!): AuthPayload!
+  "Authenticate with email and password."
+  login(input: LoginInput!): AuthPayload!
+  "Exchange a refresh token for a new access token. Web clients may omit the argument and rely on the httpOnly refresh cookie with CSRF protection."
+  refreshToken(token: String): AuthPayload!
+  "Invalidate a refresh token. Web clients may omit the argument and rely on the httpOnly refresh cookie."
+  logout(token: String): Boolean!
+}
