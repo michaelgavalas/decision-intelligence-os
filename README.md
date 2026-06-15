@@ -269,4 +269,4 @@ The backend and web client work end to end - auth, the full decision lifecycle, 
 
 ## License
 
-[MIT](./LICENSE).
+Released under the [MIT License](./LICENSE). Copyright (c) 2026 Michael Gavalas.
