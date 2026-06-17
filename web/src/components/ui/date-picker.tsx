@@ -81,12 +81,15 @@ export function DatePicker({
             stops a day click from registering as an outside-click that would
             dismiss a surrounding modal. */}
         <Popover.Content
+          side="top"
           align="start"
-          sideOffset={6}
+          sideOffset={8}
+          avoidCollisions={false}
           className="z-50 rounded-lg border border-border bg-surface p-2 text-foreground shadow-md data-[state=open]:animate-[fade-in_140ms_ease-out]"
         >
           <Calendar
             mode="single"
+            fixedWeeks
             selected={selected}
             defaultMonth={selected}
             autoFocus
