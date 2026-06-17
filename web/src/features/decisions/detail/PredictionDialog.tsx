@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { DatePicker } from "@/components/ui/date-picker";
 import { FormField } from "@/components/ui/form-field";
-import { Slider } from "@/components/ui/slider";
+import { PercentSlider } from "@/components/ui/percent-slider";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/toaster";
 import {
@@ -200,22 +200,13 @@ export function PredictionDialog({
             required
           >
             {(props) => (
-              <div className="flex items-center gap-4 pt-1">
-                <Slider
-                  id={props.id}
-                  aria-describedby={props["aria-describedby"]}
-                  thumbLabel="Probability percent"
-                  min={0}
-                  max={100}
-                  step={1}
-                  value={[Number(probability) || 0]}
-                  onValueChange={([v]) => setProbability(String(v))}
-                  className="flex-1"
-                />
-                <span className="w-12 text-right text-base font-semibold tabular-nums text-foreground">
-                  {Number(probability) || 0}%
-                </span>
-              </div>
+              <PercentSlider
+                id={props.id}
+                ariaDescribedby={props["aria-describedby"]}
+                label="Probability"
+                value={Number(probability) || 0}
+                onChange={(v) => setProbability(String(v))}
+              />
             )}
           </FormField>
 

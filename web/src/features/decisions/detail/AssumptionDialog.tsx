@@ -11,7 +11,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { FormField } from "@/components/ui/form-field";
-import { Slider } from "@/components/ui/slider";
+import { PercentSlider } from "@/components/ui/percent-slider";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/toaster";
 import {
@@ -180,22 +180,13 @@ export function AssumptionDialog({
             required
           >
             {(props) => (
-              <div className="flex items-center gap-4 pt-1">
-                <Slider
-                  id={props.id}
-                  aria-describedby={props["aria-describedby"]}
-                  thumbLabel="Confidence percent"
-                  min={0}
-                  max={100}
-                  step={1}
-                  value={[Number(confidence) || 0]}
-                  onValueChange={([v]) => setConfidence(String(v))}
-                  className="flex-1"
-                />
-                <span className="w-12 text-right text-base font-semibold tabular-nums text-foreground">
-                  {Number(confidence) || 0}%
-                </span>
-              </div>
+              <PercentSlider
+                id={props.id}
+                ariaDescribedby={props["aria-describedby"]}
+                label="Confidence"
+                value={Number(confidence) || 0}
+                onChange={(v) => setConfidence(String(v))}
+              />
             )}
           </FormField>
 
