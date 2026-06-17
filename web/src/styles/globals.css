@@ -230,39 +230,80 @@ textarea,
   --rdp-day_button-height: 2.25rem;
   --rdp-day_button-border-radius: 0.5rem;
   --rdp-selected-border: none;
+  --rdp-outside-opacity: 0.45;
   margin: 0;
+  padding: 0.25rem;
   font-size: 0.875rem;
 }
 
 .rdp-dios .rdp-month_caption {
   font-weight: 600;
-}
-
-.rdp-dios .rdp-day_button {
-  cursor: pointer;
-}
-
-.rdp-dios .rdp-day_button:hover {
-  background-color: var(--muted);
-  border-radius: 0.5rem;
-}
-
-.rdp-dios .rdp-selected .rdp-day_button {
-  color: var(--primary-foreground);
-  font-weight: 600;
-}
-
-.rdp-dios .rdp-selected .rdp-day_button:hover {
-  background-color: var(--primary);
-}
-
-.rdp-dios .rdp-chevron {
-  fill: var(--muted-foreground);
+  font-size: 0.9375rem;
 }
 
 .rdp-dios .rdp-weekday {
   color: var(--muted-foreground);
   font-weight: 500;
+  font-size: 0.75rem;
+  text-transform: none;
+}
+
+.rdp-dios .rdp-day_button {
+  cursor: pointer;
+  border-radius: 0.5rem;
+  font-variant-numeric: tabular-nums;
+  transition:
+    background-color 150ms ease-out,
+    color 150ms ease-out;
+}
+
+.rdp-dios .rdp-day_button:hover {
+  background-color: var(--muted);
+}
+
+.rdp-dios .rdp-day_button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+/* Today (when not selected): primary text with a subtle ring. */
+.rdp-dios .rdp-today:not(.rdp-selected) .rdp-day_button {
+  color: var(--primary);
+  font-weight: 600;
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+
+/* Selected day: the same blue as the primary buttons. */
+.rdp-dios .rdp-selected .rdp-day_button {
+  background-color: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+  font-weight: 600;
+}
+
+.rdp-dios .rdp-selected .rdp-day_button:hover {
+  background-color: var(--primary-hover) !important;
+}
+
+/* Month navigation chevrons. */
+.rdp-dios .rdp-button_previous,
+.rdp-dios .rdp-button_next {
+  border-radius: 0.5rem;
+  transition: background-color 150ms ease-out;
+}
+
+.rdp-dios .rdp-button_previous:hover,
+.rdp-dios .rdp-button_next:hover {
+  background-color: var(--muted);
+}
+
+.rdp-dios .rdp-chevron {
+  fill: var(--muted-foreground);
+  transition: fill 150ms ease-out;
+}
+
+.rdp-dios .rdp-button_previous:hover .rdp-chevron,
+.rdp-dios .rdp-button_next:hover .rdp-chevron {
+  fill: var(--foreground);
 }
 
 @media (prefers-reduced-motion: reduce) {
