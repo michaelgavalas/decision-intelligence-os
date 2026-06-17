@@ -190,7 +190,7 @@ describe("DecisionDetailPage", () => {
           input: {
             decisionId: DECISION_ID,
             statement: "Pricing stays competitive.",
-            confidence: 0.6,
+            confidence: 0.5,
           },
         },
       },
@@ -202,7 +202,7 @@ describe("DecisionDetailPage", () => {
               __typename: "Assumption",
               id: "asm-2",
               statement: "Pricing stays competitive.",
-              confidence: 0.6,
+              confidence: 0.5,
               createdAt: "2026-06-05T00:00:00Z",
               evidence: [],
             },
@@ -225,9 +225,7 @@ describe("DecisionDetailPage", () => {
       within(dialog).getByLabelText(/statement/i),
       "Pricing stays competitive.",
     );
-    const confidenceInput = within(dialog).getByLabelText(/confidence/i);
-    await user.clear(confidenceInput);
-    await user.type(confidenceInput, "60");
+    // Confidence is a slider; the default (50% = 0.5) is submitted as-is.
 
     await user.click(
       within(dialog).getByRole("button", { name: /^add assumption$/i }),

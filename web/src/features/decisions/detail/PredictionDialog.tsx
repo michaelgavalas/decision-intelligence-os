@@ -10,8 +10,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { DatePicker } from "@/components/ui/date-picker";
 import { FormField } from "@/components/ui/form-field";
-import { Input } from "@/components/ui/input";
+import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/toaster";
 import {
@@ -195,22 +196,25 @@ export function PredictionDialog({
           <FormField
             label="Probability"
             error={fieldErrors.probability}
-            helperText="Your estimated likelihood, from 0 to 100 percent."
+            helperText="Drag to set your estimated likelihood."
             required
           >
             {(props) => (
-              <div className="flex items-center gap-2">
-                <Input
-                  {...props}
-                  type="number"
+              <div className="flex items-center gap-4 pt-1">
+                <Slider
+                  id={props.id}
+                  aria-describedby={props["aria-describedby"]}
+                  thumbLabel="Probability percent"
                   min={0}
                   max={100}
                   step={1}
-                  className="w-28 tabular-nums"
-                  value={probability}
-                  onChange={(event) => setProbability(event.target.value)}
+                  value={[Number(probability) || 0]}
+                  onValueChange={([v]) => setProbability(String(v))}
+                  className="flex-1"
                 />
-                <span className="text-sm text-muted-foreground">%</span>
+                <span className="w-12 text-right text-base font-semibold tabular-nums text-foreground">
+                  {Number(probability) || 0}%
+                </span>
               </div>
             )}
           </FormField>
@@ -221,12 +225,11 @@ export function PredictionDialog({
             helperText="Optional date when this forecast can be settled."
           >
             {(props) => (
-              <Input
-                {...props}
-                type="date"
-                className="w-48"
+              <DatePicker
+                id={props.id}
+                ariaDescribedby={props["aria-describedby"]}
                 value={resolvesAt}
-                onChange={(event) => setResolvesAt(event.target.value)}
+                onChange={setResolvesAt}
               />
             )}
           </FormField>

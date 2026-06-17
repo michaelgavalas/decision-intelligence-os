@@ -150,7 +150,7 @@ export function DecisionsListPage() {
               {edges.map(({ node }) => {
                 const status = STATUS_META[node.status];
                 return (
-                  <TableRow key={node.id} className="cursor-pointer">
+                  <TableRow key={node.id}>
                     <TableCell className="font-medium">
                       <Link
                         to={`/decisions/${node.id}`}

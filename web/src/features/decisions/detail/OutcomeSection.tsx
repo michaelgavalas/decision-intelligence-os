@@ -9,8 +9,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { DatePicker } from "@/components/ui/date-picker";
 import { FormField } from "@/components/ui/form-field";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/toaster";
 import {
@@ -212,13 +212,12 @@ export function OutcomeSection({
               required
             >
               {(props) => (
-                <Input
-                  {...props}
-                  type="date"
-                  className="w-48"
+                <DatePicker
+                  id={props.id}
+                  ariaDescribedby={props["aria-describedby"]}
                   disabled={isDraft}
                   value={resolvedAt}
-                  onChange={(event) => setResolvedAt(event.target.value)}
+                  onChange={setResolvedAt}
                 />
               )}
             </FormField>

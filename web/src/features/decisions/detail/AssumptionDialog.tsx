@@ -11,7 +11,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { FormField } from "@/components/ui/form-field";
-import { Input } from "@/components/ui/input";
+import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/toaster";
 import {
@@ -176,22 +176,25 @@ export function AssumptionDialog({
           <FormField
             label="Confidence"
             error={fieldErrors.confidence}
-            helperText="How likely this assumption holds, from 0 to 100 percent."
+            helperText="Drag to set how likely this assumption holds."
             required
           >
             {(props) => (
-              <div className="flex items-center gap-2">
-                <Input
-                  {...props}
-                  type="number"
+              <div className="flex items-center gap-4 pt-1">
+                <Slider
+                  id={props.id}
+                  aria-describedby={props["aria-describedby"]}
+                  thumbLabel="Confidence percent"
                   min={0}
                   max={100}
                   step={1}
-                  className="w-28 tabular-nums"
-                  value={confidence}
-                  onChange={(event) => setConfidence(event.target.value)}
+                  value={[Number(confidence) || 0]}
+                  onValueChange={([v]) => setConfidence(String(v))}
+                  className="flex-1"
                 />
-                <span className="text-sm text-muted-foreground">%</span>
+                <span className="w-12 text-right text-base font-semibold tabular-nums text-foreground">
+                  {Number(confidence) || 0}%
+                </span>
               </div>
             )}
           </FormField>
