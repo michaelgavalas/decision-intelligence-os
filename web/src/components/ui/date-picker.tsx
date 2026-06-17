@@ -77,26 +77,27 @@ export function DatePicker({
             </span>
           </button>
         </Popover.Trigger>
-        <Popover.Portal>
-          <Popover.Content
-            align="start"
-            sideOffset={6}
-            className="z-50 rounded-lg border border-border bg-surface p-2 text-foreground shadow-md data-[state=open]:animate-[fade-in_140ms_ease-out]"
-          >
-            <Calendar
-              mode="single"
-              selected={selected}
-              defaultMonth={selected}
-              autoFocus
-              onSelect={(date) => {
-                onChange(date ? formatValue(date) : "");
-                if (date) {
-                  setOpen(false);
-                }
-              }}
-            />
-          </Popover.Content>
-        </Popover.Portal>
+        {/* Not portaled: keeping the popover inside the Dialog's DOM subtree
+            stops a day click from registering as an outside-click that would
+            dismiss a surrounding modal. */}
+        <Popover.Content
+          align="start"
+          sideOffset={6}
+          className="z-50 rounded-lg border border-border bg-surface p-2 text-foreground shadow-md data-[state=open]:animate-[fade-in_140ms_ease-out]"
+        >
+          <Calendar
+            mode="single"
+            selected={selected}
+            defaultMonth={selected}
+            autoFocus
+            onSelect={(date) => {
+              onChange(date ? formatValue(date) : "");
+              if (date) {
+                setOpen(false);
+              }
+            }}
+          />
+        </Popover.Content>
       </Popover.Root>
       {selected && !disabled ? (
         <button

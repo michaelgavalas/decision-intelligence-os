@@ -258,7 +258,8 @@ textarea,
 }
 
 .rdp-dios .rdp-day_button:hover {
-  background-color: var(--muted);
+  background-color: color-mix(in srgb, var(--primary) 16%, transparent);
+  color: var(--foreground);
 }
 
 .rdp-dios .rdp-day_button:focus-visible {
