@@ -86,6 +86,39 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Cursor discipline: arrow for general UI (text stays selectable, just no
+   I-beam), pointer for interactive elements, and the text caret only on inputs. */
+body {
+  cursor: default;
+}
+
+a[href],
+button,
+select,
+summary,
+label[for],
+[role="button"],
+[role="tab"],
+[role="menuitem"],
+[role="menuitemradio"],
+[role="option"],
+[role="switch"] {
+  cursor: pointer;
+}
+
+:disabled,
+[aria-disabled="true"],
+[data-disabled] {
+  cursor: not-allowed;
+}
+
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="button"]):not([type="submit"]):not([type="reset"]),
+textarea,
+[contenteditable="true"],
+[contenteditable=""] {
+  cursor: text;
+}
+
 /* Motion primitives - kept subtle (150-300ms, transform/opacity only). */
 @keyframes fade-in {
   from {
@@ -184,6 +217,52 @@ body {
 
 .animate-overlay-out {
   animation: overlay-out 150ms ease-in both;
+}
+
+/* react-day-picker, themed with the app's design tokens. */
+.rdp-dios {
+  --rdp-accent-color: var(--primary);
+  --rdp-accent-background-color: var(--primary);
+  --rdp-today-color: var(--primary);
+  --rdp-day-width: 2.25rem;
+  --rdp-day-height: 2.25rem;
+  --rdp-day_button-width: 2.25rem;
+  --rdp-day_button-height: 2.25rem;
+  --rdp-day_button-border-radius: 0.5rem;
+  --rdp-selected-border: none;
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.rdp-dios .rdp-month_caption {
+  font-weight: 600;
+}
+
+.rdp-dios .rdp-day_button {
+  cursor: pointer;
+}
+
+.rdp-dios .rdp-day_button:hover {
+  background-color: var(--muted);
+  border-radius: 0.5rem;
+}
+
+.rdp-dios .rdp-selected .rdp-day_button {
+  color: var(--primary-foreground);
+  font-weight: 600;
+}
+
+.rdp-dios .rdp-selected .rdp-day_button:hover {
+  background-color: var(--primary);
+}
+
+.rdp-dios .rdp-chevron {
+  fill: var(--muted-foreground);
+}
+
+.rdp-dios .rdp-weekday {
+  color: var(--muted-foreground);
+  font-weight: 500;
 }
 
 @media (prefers-reduced-motion: reduce) {
